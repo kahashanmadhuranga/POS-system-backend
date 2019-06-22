@@ -15,16 +15,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 
-@WebServlet(urlPatterns = "/customer")
-public class Customer extends HttpServlet {
+@WebServlet(urlPatterns = "/item")
+public class Item extends HttpServlet {
 
     @Resource(name = "java:comp/env/jdbc/pool")
     private DataSource ds;
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         try (PrintWriter out = resp.getWriter()) {
 
             resp.setContentType("application/json");
@@ -33,25 +31,25 @@ public class Customer extends HttpServlet {
                 Connection connection = ds.getConnection();
 
                 Statement stm = connection.createStatement();
-                ResultSet rst = stm.executeQuery("SELECT * FROM Customer");
+                ResultSet rst = stm.executeQuery("SELECT * FROM item");
 
-                JsonArrayBuilder customers = Json.createArrayBuilder();
+                JsonArrayBuilder items = Json.createArrayBuilder();
 
                 while (rst.next()) {
                     String id = rst.getString("id");
-                    String name = rst.getString("name");
-                    String address = rst.getString("address");
-                    String telephone = rst.getString("telephone");
+                    String description = rst.getString("description");
+                    String price = rst.getString("price");
+                    String qty = rst.getString("qty");
 
-                    JsonObject customer = Json.createObjectBuilder().add("id", id)
-                            .add("name", name)
-                            .add("address", address)
-                            .add("telephone", telephone)
+                    JsonObject item = Json.createObjectBuilder().add("id", id)
+                            .add("description", description)
+                            .add("price", price)
+                            .add("qty", qty)
                             .build();
-                    customers.add(customer);
+                    items.add(item);
                 }
 
-                out.println(customers.build().toString());
+                out.println(items.build().toString());
 
                 connection.close();
             } catch (Exception ex) {
@@ -60,12 +58,10 @@ public class Customer extends HttpServlet {
             }
 
         }
-
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         JsonReader reader = Json.createReader(req.getReader());
         resp.setContentType("application/json");
 
@@ -74,18 +70,19 @@ public class Customer extends HttpServlet {
         Connection connection = null;
 
         try {
-            JsonObject customer = reader.readObject();
-            int id = customer.getInt("id");
-            String name = customer.getString("name");
-            String address = customer.getString("address");
-            String telephone = customer.getString("telephone");
+            JsonObject item = reader.readObject();
+            int id = item.getInt("id");
+            String description = item.getString("description");
+            String price = item.getString("price");
+            double priceOne = Double.parseDouble(price);
+            int qty = item.getInt("qty");
             connection = ds.getConnection();
 
-            PreparedStatement pstm = connection.prepareStatement("INSERT INTO Customer VALUES (?,?,?,?)");
+            PreparedStatement pstm = connection.prepareStatement("INSERT INTO item VALUES (?,?,?,?)");
             pstm.setObject(1, id);
-            pstm.setObject(2, name);
-            pstm.setObject(3, address);
-            pstm.setObject(4, telephone);
+            pstm.setObject(2, description);
+            pstm.setObject(3, priceOne);
+            pstm.setObject(4, qty);
             boolean result = pstm.executeUpdate() > 0;
 
             if (result) {
@@ -117,18 +114,19 @@ public class Customer extends HttpServlet {
         Connection connection = null;
 
         try {
-            JsonObject customer = reader.readObject();
-            int id = customer.getInt("id");
-            String name = customer.getString("name");
-            String address = customer.getString("address");
-            String telephone = customer.getString("telephone");
+            JsonObject item = reader.readObject();
+            int id = item.getInt("id");
+            String description = item.getString("description");
+            String price = item.getString("price");
+            double priceOne = Double.parseDouble(price);
+            int qty = item.getInt("qty");
             connection = ds.getConnection();
 
-            PreparedStatement pstm = connection.prepareStatement(" UPDATE CUSTOMER SET name=?, address=?, telephone=? WHERE id=?;");
-            pstm.setObject(1, name);
-            pstm.setObject(2, address);
-            pstm.setObject(3, telephone);
-            pstm.setObject(4, 1);
+            PreparedStatement pstm = connection.prepareStatement(" UPDATE item SET description=?, price=?, qty=? WHERE id=?;");
+            pstm.setObject(1, description);
+            pstm.setObject(2, priceOne);
+            pstm.setObject(3, qty);
+            pstm.setObject(4, id);
             boolean result = pstm.executeUpdate() > 0;
 
             if (result) {
@@ -157,14 +155,14 @@ public class Customer extends HttpServlet {
 
         PrintWriter out = resp.getWriter();
         String id = req.getParameter("id");
-        int cusId = Integer.parseInt(id);
+        int itemId = Integer.parseInt(id);
         Connection connection = null;
 
         try {
             connection = ds.getConnection();
 
-            PreparedStatement pstm = connection.prepareStatement(" DELETE FROM customer WHERE id=?;");
-            pstm.setObject(1, cusId);
+            PreparedStatement pstm = connection.prepareStatement(" DELETE FROM item WHERE id=?;");
+            pstm.setObject(1, itemId);
             boolean result = pstm.executeUpdate() > 0;
 
             if (result) {
