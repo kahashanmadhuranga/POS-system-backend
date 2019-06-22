@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="gson-2.2.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/gson-2.2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-all-1.9.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/modelmapper-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/modelmapper-gson-2.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/modelmapper-jackson-2.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/modelmapper-spring-2.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/mysql-connector-java-5.1.6-bin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring-security-crypto-3.1.2.release.jar!/" />
+      <root url="file://$PROJECT_DIR$/lib/jsonp" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/jsonp" recursive="false" />
+  </library>
+</component>
